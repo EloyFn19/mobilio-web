@@ -45,9 +45,12 @@ section {
 /* Encabezados */
 
 h1 {
-   font-family: "poppins" /* La fuente Cormorant Garamond con serif de respaldo */
-    font-weight: 700; /* Para el estilo Bold */
-    font-style: italic; /* Para el estilo Italic */
+    font-family: "poppins"
+        /* La fuente Cormorant Garamond con serif de respaldo */
+        font-weight: 700;
+    /* Para el estilo Bold */
+    font-style: italic;
+    /* Para el estilo Italic */
     /* margin-top: 0px; */
     margin-bottom: 20px;
     /* Color: rgba(235, 25, 134, 0.77); */
@@ -71,7 +74,7 @@ h1 {
 }
 
 h2 {
-    
+
     font-size: 180%;
     word-spacing: 4px;
     letter-spacing: 1px;
@@ -166,7 +169,7 @@ header {
 }
 
 .home-container {
-    font-family: "Playfair Display","Bold 700 Italic";
+    font-family: "Playfair Display", "Bold 700 Italic";
     display: inline-block;
     /* margin-top: 5%; */
     margin-bottom: 1%;
@@ -448,9 +451,60 @@ footer p {
     margin-top: 0;
 }
 
+/* Estilos para el spinner de carga */
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border-left-color: #007bff;
+    /* Color de tu marca */
+    animation: spin 1.2s linear infinite;
+    margin: 0 auto 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#form-status p {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+#form-status.success {
+    color: green;
+}
+
+#form-status.error {
+    color: red;
+}
+
+/* Estilo para el contenedor del botón y spinner */
+.form-button-container {
+    height: 50px;
+    /* Ajusta la altura para que coincida con el botón */
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Ajuste para el spinner */
+#loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    text-align: center;
+}
+
 /* Media queries */
-
-
 /* tablet grandes de 1023px en adelante  */
 
 @media only screen and (max-width:1200px) {
@@ -503,74 +557,72 @@ footer p {
     .btn-contact-ingresa:hover {
         width: min-content;
     }
+}
 
-    /* telefonos pequeños a tablet pequeñas 481px a 767px */
+/* telefonos pequeños a tablet pequeñas 481px a 767px */
 
-    @media only screen and (max-width:767px) {
-        body {
-            font-size: 16px;
-        }
+@media only screen and (max-width:767px) {
+    body {
+        font-size: 16px;
+    }
 
-        section {
-            padding: 1% 1% 1% 1%;
-
-        }
-
-        .row,
-        .home-container {
-            padding: 0 4%;
-        }
-
-        .col {
-            width: 100%;
-            margin: 0 0 4% 0;
-        }
-
-        h1 {
-            font-size: 180%;
-        }
-
-        h2 {
-            font-size: 150%;
-        }
-
-        .text-center {
-            width: 100%;
-            margin-bottom: 2%;
-            /* margin: 1%; */
-        }
-
-        .btn-contact-ingresa,
-        .btn-contact-ingresa:hover {
-            width: min-content
-        }
+    section {
+        padding: 1% 1% 1% 1%;
 
     }
 
+    .row,
+    .home-container {
+        padding: 0 4%;
+    }
 
-    /* telefonos pequeños de 0 a 480px */
+    .col {
+        width: 100%;
+        margin: 0 0 4% 0;
+    }
 
-    @media only screen and (max-width:480px) {
+    h1 {
+        font-size: 180%;
+    }
 
-        section {
-            padding: 1% 1% 1% 1%;
+    h2 {
+        font-size: 150%;
+    }
 
-        }
+    .text-center {
+        width: 100%;
+        margin-bottom: 2%;
+        /* margin: 1%; */
+    }
 
-        .contact-form {
-            width: 100%;
+    .btn-contact-ingresa,
+    .btn-contact-ingresa:hover {
+        width: min-content
+    }
 
-        }
-
-        .header {
-            height: 80%;
-        }
-
-        .btn-contact-ingresa,
-        .btn-contact-ingresa:hover {
-            width: min-content;
-        }
+}
 
 
+/* telefonos pequeños de 0 a 480px */
+
+@media only screen and (max-width:480px) {
+
+    section {
+        padding: 1% 1% 1% 1%;
 
     }
+
+    .contact-form {
+        width: 100%;
+
+    }
+
+    .header {
+        height: 80%;
+    }
+
+    .btn-contact-ingresa,
+    .btn-contact-ingresa:hover {
+        width: min-content;
+    }
+}

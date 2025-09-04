@@ -30,7 +30,7 @@
         </div>
         <script type="text/javascript">
             (function () { var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = 'https://assets.upnify.com/scripts/tracking.js'; var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x); })();</script>
-        </header>
+    </header>
     <section>
         <div class="row">
             <h2>Tu Oficina, el lugar donde las ideas toman forma</h2>
@@ -184,7 +184,7 @@
             <h2 id="contacto">Déjanos tus comentarios</h2>
             <form id="contactForm"
                 action="https://api.salesup.com/v4/integraciones/P25AP1096C5B1-81F8-4D5F-B1E4-AD7C67174265"
-                method="POST" class="contact-form">
+                method="POST" class="contact-form" enctype="multipart/form-data">
                 <input type="hidden" id="etiqueta" name="Etiqueta" value="Página web">
                 <div class="row">
                     <div class="col span-1-of-3">
@@ -231,14 +231,23 @@
                     </div>
 
                 </div>
-
+                <div class="row">
+                    <div class="col span-1-of-3">
+                        <label for="archivo" class="label">Adjuntar archivo</label>
+                    </div>
+                    <div class="col span-2-of-3">
+                        <input type="file" name="recibo" id="archivoReal" multiple>
+                    </div>
+                </div>
 
                 <div class="btn-form" text-align="center">
                     <input type="submit" class="btn-sombra" value="Enviar" id="submit-button">
                 </div>
-
-
             </form>
+            <div id="loading-spinner" style="display:none; margin-top: 20px; text-align: center;">
+                <div class="spinner"></div>
+                <p>Enviando...</p>
+            </div>
             <div id="form-status" style="margin-top: 20px; text-align: center; padding: 10px; border-radius: 4px;">
             </div>
         </div>
@@ -334,71 +343,134 @@
             }
             return "Desktop";
         }
-
         // --- FIN DE FUNCIONES DE DETECCIÓN ---
 
         const form = document.getElementById('contactForm');
         const formStatus = document.getElementById('form-status');
+        const submitButton = document.getElementById('submit-button');
+        const loadingSpinner = document.getElementById('loading-spinner');
 
-        form.addEventListener('submit', function(event) {
+        // ✅ REEMPLAZA ESTO CON TU PROPIO API KEY (DE "SISTEMAS EXTERNOS")
+        const API_KEY = 'P2522520FCB-A8D7-49D0-947A-D1FB55D6C063';
+
+        form.addEventListener('submit', async function (event) {
             event.preventDefault();
 
-            formStatus.className = '';
-            formStatus.textContent = 'Enviando información...';
+            submitButton.disabled = true;
+            // 👇 Esta línea oculta el botón de enviar
+            submitButton.style.display = 'none';
+            formStatus.textContent = '';
+            loadingSpinner.style.display = 'block';
 
-            const formData = new FormData(form);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
+            try {
+                const formData = new FormData(form);
+                const prospectoData = {};
 
-            // ASIGNAR LOS VALORES DE UTM FIJOS (COMO YA FUNCIONÓ)
-            data.utm_source = "Mobilio.Shop.Mx Web Page";
-            data.utm_medium = "Web Page";
-            data.utm_campaign = "Marketing";
-            data.utm_content = "General";
-            data.utm_term = "";
-            data.Refiere = document.referrer;
-
-            // ASIGNAR LA INFORMACIÓN DEL DISPOSITIVO/NAVEGADOR A LOS CAMPOS CUSTOMIZABLES
-            // Ahora con la descripción entre paréntesis
-            data.customfield1 = getOperatingSystem() + " (Sistema Operativo)";     
-            const browser = getBrowserInfo();
-            data.customfield2 = browser.name + " (Navegador)";          
-            data.customfield3 = browser.version + " (Versión Navegador)";  
-            data.customfield4 = getDeviceType() + " (Tipo de Dispositivo)";  
-            data.customfield5 = navigator.userAgent + " (User-Agent Completo)"; 
-
-            // Envía la petición a SalesUp
-            fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
+                // Excluir el campo de archivo del objeto de datos inicial
+                for (let [key, value] of formData.entries()) {
+                    if (key !== 'recibo') {
+                        prospectoData[key] = value;
+                    }
                 }
-                return response.json().then(errorData => {
-                    throw new Error(errorData.message || 'Error desconocido al enviar el formulario.');
+
+                // ASIGNAR LOS VALORES UTM y CUSTOMIZABLES
+                prospectoData.utm_source = "Mobilio.Shop.Mx Web Page";
+                prospectoData.utm_medium = "Web Page";
+                prospectoData.utm_campaign = "Marketing";
+                prospectoData.utm_content = "General";
+                prospectoData.utm_term = "";
+                prospectoData.Refiere = document.referrer;
+                prospectoData.customfield1 = getOperatingSystem() + " (Sistema Operativo)";
+                const browser = getBrowserInfo();
+                prospectoData.customfield2 = browser.name + " (Navegador)";
+                prospectoData.customfield3 = browser.version + " (Versión Navegador)";
+                prospectoData.customfield4 = getDeviceType() + " (Tipo de Dispositivo)";
+                prospectoData.customfield5 = navigator.userAgent + " (User-Agent Completo)";
+
+                let sessionToken = null;
+                let tkContacto = null;
+
+                // 1. Iniciar sesión para obtener el token temporal
+                const loginResponse = await fetch("https://api.upnify.com/integraciones/sesion", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "token": API_KEY }
                 });
-            })
-            .then(responseData => {
-                console.log('Formulario enviado con éxito. Respuesta de la API:', responseData);
+                const loginData = await loginResponse.json();
+                if (!loginResponse.ok || !loginData[0]?.token) {
+                    console.error("❌ Error en el login:", loginData);
+                    throw new Error("Error al obtener el token de sesión. Verifica tu API Key.");
+                }
+                sessionToken = loginData[0].token;
+                console.log("✅ Token de sesión obtenido.");
+
+                // 2. Crear el prospecto
+                const prospectoResponse = await fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(prospectoData)
+                });
+
+                if (!prospectoResponse.ok) {
+                    const errorData = await prospectoResponse.json();
+                    throw new Error(errorData.message || 'Error al crear el prospecto.');
+                }
+                const prospectoResult = await prospectoResponse.json();
+                tkContacto = prospectoResult[0]?.details?.[0]?.tkContacto;
+
+                if (!tkContacto) {
+                    throw new Error('No se recibió el token del prospecto.');
+                }
+                console.log("✅ Prospecto creado correctamente. tkContacto:", tkContacto);
+
+                // 3. Adjuntar los archivos al prospecto si existen
+                const archivoInput = document.getElementById('archivoReal');
+                const archivos = archivoInput.files;
+
+                if (tkContacto && archivos.length > 0) {
+                    for (const archivo of archivos) {
+                        const fileFormData = new FormData();
+                        fileFormData.append('archivo', archivo);
+                        fileFormData.append("tipo", "DOC");
+                        fileFormData.append("tipoArchivo", "0");
+
+                        const fileUploadUrl = `https://api.upnify.com/v4/prospectos/${tkContacto}/archivos`;
+
+                        try {
+                            const fileResponse = await fetch(fileUploadUrl, {
+                                method: 'POST',
+                                headers: { 'token': sessionToken }, // ¡Usa el token de sesión!
+                                body: fileFormData,
+                            });
+
+                            if (!fileResponse.ok) {
+                                console.error(`❌ Error al adjuntar el archivo: ${archivo.name}`);
+                                const errorText = await fileResponse.text();
+                                console.error('Mensaje de error de la API:', errorText);
+                            } else {
+                                console.log(`✅ Archivo adjuntado correctamente: ${archivo.name}`);
+                            }
+                        } catch (error) {
+                            console.error(`❌ Error de red o en la petición para adjuntar ${archivo.name}`, error);
+                        }
+                    }
+                }
+
                 formStatus.className = 'success';
                 formStatus.textContent = '¡Gracias! Tu información ha sido enviada con éxito.';
                 form.reset();
-            })
-            .catch(error => {
-                console.error('Error al enviar el formulario:', error);
+
+            } catch (error) {
+                console.error('Error en el proceso del formulario:', error);
                 formStatus.className = 'error';
-                formStatus.textContent = 'Hubo un problema al enviar tu información. Por favor, inténtalo de nuevo.';
-            });
+                formStatus.textContent = error.message || 'Hubo un problema al enviar tu información. Por favor, inténtalo de nuevo.';
+            } finally {
+                loadingSpinner.style.display = 'none';
+                submitButton.disabled = false;
+                // 👇 Esta línea vuelve a mostrar el botón
+                submitButton.style.display = 'inline-block';
+            }
         });
     </script>
-
 </body>
 
 </html>

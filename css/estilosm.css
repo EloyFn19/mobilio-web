@@ -35,7 +35,6 @@ html {
 
 }
 
-
 .roboto {
     font-family: sans-serif, serif;
     font-optical-sizing: Medium;
@@ -50,35 +49,24 @@ section {
     background-color: rgb(88, 112, 120);
 
 }
-
-
 /* Encabezados */
-
 h1 {
     margin-bottom: 4%;
     color: #3F448C;
     word-spacing: 4px;
     letter-spacing: 1px;
     text-align: center;
-
-
     text-shadow:
         -0.5px -0.5px 5px white,
-        /* Arriba izquierda */
         0.5px -0.5px 5px white,
-        /* Arriba derecha */
         -0.5px 0.5px 5px white,
-        /* Abajo izquierda */
         0.5px 0.5px 5px white;
-    /* Abajo derecha */
     text-rendering: optimizeLegibility;
-
     font-optical-sizing: Medium;
     /* font-weight: 800; */
     font-size: 70px;
     /* font-style: italic; */
 }
-
 h2 {
     color: rgb(255, 255, 255);
     font-size: 180%;
@@ -88,7 +76,6 @@ h2 {
     margin-bottom: 20px;
     margin-top: 15px;
 }
-
 h2:after {
     display: block;
     height: 2px;
@@ -98,18 +85,11 @@ h2:after {
     margin: 0 auto;
     margin-top: 20px;
 }
-
 h3 {
     font-size: 130%;
     width: auto;
 }
-
-/* Nav */
-
-
-
 /* Home-container */
-
 header {
     position: relative;
     background-image: url(../img/fondo.jpg);
@@ -140,7 +120,6 @@ header>* {
     position: relative;
     /* Permite que el contenido se posicione sobre el overlay */
     z-index: 2;
-    /* Mayor que el z-index del overlay */
 }
 
 .logo {
@@ -268,40 +247,6 @@ header>* {
     list-style: disc;
 }
 
-/*
-
-.plan-content div {
-    padding: 15 px;
-    border-bottom: 3px solid #333333;
-}
-
-.plan-price {
-    font-size: 250%;
-    margin-bottom: 10px;
-    font-weight: 10;
-    color: whitesmoke;
-    font-style: italic;
-}
-
-.plan-content ul {
-    display: :none;
-
-}
-
-.plan-content h3:hover+ul {
-    display: :block;
-    list-style: disc;
-    list-style-position: inside;
-}
-
-.plan-content ul li {
-    padding: 5px;
-} */
-
-
-/* Menús desplegables */
-
-
 .container ul {
     /* Hide the list by default */
     display: none;
@@ -310,14 +255,7 @@ header>* {
     padding: 0;
     /* Quita el padding por defecto de la ul para mayor control */
     margin: 0;
-    /* Quita el margin por defecto de la ul */
-    /* Puedes añadir un margen superior si quieres separar la lista del h3 */
-    /* margin-top: 10px; */
-    /* background-color: white; Un fondo para que se vea claramente */
-    /* border: 1px solid #ccc; Un borde para delinear la lista */
-    /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); */
-    /* Sombra para efecto pop-up */
-    position: absolute;
+        position: absolute;
     /* Para que la lista flote sobre el contenido */
     z-index: 1000;
     /* Asegura que esté por encima de otros elementos */
@@ -569,8 +507,6 @@ footer p {
 }
 
 /* Media queries */
-
-
 /* tablet grandes de 1023px en adelante  */
 
 @media only screen and (max-width:1200px) {
@@ -586,7 +522,6 @@ footer p {
     }
 }
 
-
 /* tablet pequeñas a grandes de 768 a 1023px */
 
 @media only screen and (max-width:1023px) {
@@ -599,15 +534,11 @@ footer p {
         padding: 1% 1% 1% 1%;
     }
 
-
-
     .plan-content {
         width: 100%;
         margin-left: 0%;
 
     }
-
-
 
     .plan-price {
         font-size: 250%;
@@ -618,7 +549,6 @@ footer p {
         border-radius: 50%;
         font-size: 150%;
     }
-
 
     .btn-about-us,
     .btn-about-us:hover,
@@ -646,8 +576,6 @@ footer p {
 
     }
 
-
-
     .col {
         width: 100%;
         margin: 0 0 4% 0;
@@ -673,7 +601,6 @@ footer p {
     }
 
 }
-
 
 /* telefonos pequeños de 0 a 480px */
 
